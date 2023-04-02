@@ -54,6 +54,91 @@ fn main() {
     println!("dr2 is {} at address {:p} pointing to address {:p}", dr2,&dr2,dr2);        
     let dc: i32 = *dr2;    // so only one dereference is needed to read it
 
+    println!("");
+    println!("");
+
+    let d2x: Box<i32> = Box::new(-1);
+
+    println!("d2x is {} at address {:p} pointing to address {:p}", d2x,&d2x,d2x); 
+    let x_abs1 = i32::abs(*d2x); // explicit dereference
+    let x_abs2 = d2x.abs();      // implicit dereference
+    assert_eq!(x_abs1, x_abs2);
+    
+    let d2r: &Box<i32> = &d2x;
+    println!("d2r is {} at address {:p} pointing to address {:p}", d2r,&d2r,d2r);     
+    let r_abs1 = i32::abs(**d2r); // explicit dereference (twice)
+    let r_abs2 = d2r.abs();       // implicit dereference (twice)
+    assert_eq!(r_abs1, r_abs2);
+    
+    let d2s = String::from("Hello");
+    println!("d2s is {} at address {:p}", d2s,&d2s);     
+    let s_len1 = str::len(&d2s); // explicit reference
+    let s_len2 = d2s.len();      // implicit reference
+    assert_eq!(s_len1, s_len2);
+    println!("");
+    println!("");
+
+    let q1x = Box::new(0);
+    let q1y = Box::new(&q1x);
+    println!("q1x is {} at address {:p} pointing to address {:p}", q1x,&q1x,q1x);     
+    println!("q1y is {} at address {:p} pointing to address {:p}", q1y,&q1y,q1y);     
+    println!("q1y is {} at address {:p} pointing to address {:p}, 
+        pointing to address {:p}, pointing to address {:p}", q1y,&q1y,q1y,*q1y, **q1y);
+
+    let mut vec: Vec<i32> = vec![1,2,3];
+    let mut vecad : &Vec<i32> = &vec;
+    vec.push(4);
+    
+    let mut vec: Vec<i32> = vec![1, 2, 3];
+    let mut num: &mut i32 = &mut vec[2];
+    //vec.push(4);
+    //vec[2] = 2;
+    //println!("Third element is {}", vec[2]); 
+    *num = 5;
+    println!("Third element is {}", *num); 
+    println!("Third element is {}", vec[2]); 
+    println!("Vector is now {:?}", vec); 
+    
+            //undefined behavior: pointer used after its pointee is freed
+            //because changing the vector size requires creating a new
+            //allocation with a different size which could be in a different
+            //place in the memory
+            // vec cannot be mutated or dropped while num is in use.
+
+/*Data can be aliased. Data can be mutated. 
+But data cannot be both aliased and mutated. 
+For example, Rust enforces this principle for boxes 
+(owned pointers) by disallowing aliasing. Assigning 
+a box from one variable to another will move ownership, 
+invalidating the previous variable. Owned data can 
+only be accessed through the owner — no aliases.
+
+However, because references are non-owning pointers,
+ they need different rules than boxes to ensure the 
+ Pointer Safety Principle. By design, references are 
+ meant to temporarily create aliases. In the rest of 
+ this section, we will explain the basics of how Rust 
+ ensures the safety of references through the borrow checker. */            
+
+//References Change Permissions on Paths
+//https://rust-book.cs.brown.edu/ch04-02-references-and-borrowing.html#references-change-permissions-on-paths
+
+/*
+The core idea behind the borrow checker is that variables have three kinds
+of permissions on their data:
+
+Read (R): data can be copied to another location.
+Write (W): data can be mutated in-place.
+Own (O): data can be moved or dropped.
+These permissions don't exist at runtime, only within the compiler. 
+They describe how the compiler "thinks" about your program before the 
+program is executed.
+
+By default, a variable has read/own permissions (RO) on its data. 
+If a variable is annotated with let mut, then it also has the 
+write permission (W). The key idea is that references can 
+temporarily remove these permissions.
+ */
 
 }
 
