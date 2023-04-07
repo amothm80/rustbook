@@ -140,6 +140,13 @@ write permission (W). The key idea is that references can
 temporarily remove these permissions.
  */
 
+
+    let mut s = String::from("hello");
+    let hello: &str = &s[0..5];
+//    s = String::from("World");
+    println!("{hello}");
+    s.push_str(" world");
+
 }
 
 fn add_suffix(mut name: String) -> String {
@@ -148,5 +155,40 @@ fn add_suffix(mut name: String) -> String {
 }
 
 fn greet(g1: &String, g2: &String) { // note the ampersands
-    println!("{} {}!", g1, g2);
+    println!("{} {}!", g1, g2);    
+}
+
+
+//We now have a way to find out the index of the end of the 
+//first word in the string, but there’s a problem. We’re 
+//returning a usize on its own, but it’s only a meaningful 
+//number in the context of the &String. In other words, 
+//because it’s a separate value from the String, there’s 
+//no guarantee that it will still be valid in the future
+fn first_word_bad(s: &String) -> usize {
+    let bytes = s.as_bytes();
+
+    for (i, &item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return i;
+        }
+    }
+
+    s.len()
+}
+
+
+//Now when we call first_word, we get back a single value that is 
+//tied to the underlying data. The value is made up of a reference
+//to the starting point of the slice and the number of elements in the slice.
+fn first_word_good(s: &String) -> &str {
+    let bytes = s.as_bytes();
+
+    for (i, &item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return &s[0..i];
+        }
+    }
+
+    &s[..]
 }
