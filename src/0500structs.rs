@@ -1,6 +1,13 @@
 struct Color(u8,u8,u8);
 struct Point(i32,i32,i32);
 
+struct MyEnum;
+
+impl MyEnum{
+    pub const A: i32 = 123;
+    pub const B: i32 = 456;
+}
+
 const black:Color = Color(0,0,0);
 const white:Color = Color(255,255,255);
 
@@ -73,6 +80,8 @@ fn main(){
 
     println!("the area of height {} times width {} is {}", rect1.height, rect1.width, area(&rect1));
     println!("the area of height {} times width {} is {}", rect1.height, rect1.width, rect1.implarea());
+
+    println!{"MyEnum A is {}", MyEnum::A};
     
 
 
