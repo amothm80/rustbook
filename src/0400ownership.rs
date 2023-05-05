@@ -147,6 +147,26 @@ temporarily remove these permissions.
     println!("{hello}");
     s.push_str(" world");
 
+    let xi8 : i8 = 1; //not moved
+let xu128 : u128 = 1; //not moved
+let xis : isize = 1;//not moved
+let xf64 : f64 = 1.0;//not moved
+let xbool : bool = true;//not moved
+let xchar : char = 'a';//not moved
+let xstr : &str = "a";//not moved
+let xt : (i32,i32) = (1,1);//not moved
+let xai : [i32;3] = [1,2,3];//not moved
+let xas : [String;3] = [String::from("a"), String::from("b"), String::from("c")];//moved
+let s : String = String::from("a");//moved
+let b : Box<i8> = Box::new(1);//moved
+
+//let _mv = b;
+
+println!(
+"{:?} {:?} {:?} {:?} {:?} {:?} {:?} {:?} {:?} {:?} {:?} {:?}",
+xi8,xu128,xis,xf64,xbool,xchar,xstr,xt,xai,xas,s,b
+);
+
 }
 
 fn add_suffix(mut name: String) -> String {
